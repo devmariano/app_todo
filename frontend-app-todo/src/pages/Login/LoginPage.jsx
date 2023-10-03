@@ -5,6 +5,8 @@ export const LoginPage = () => {
   const { handleSubmit, register, formState: {errors} } = useForm();
 
   const onSubmit = (data) => {
+    const body = {...data, login: data.login.replace(/[^\w]/g, '')}
+    console.log(body);
     console.log(data);
   };
 
