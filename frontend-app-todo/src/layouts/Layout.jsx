@@ -1,18 +1,15 @@
-import {Link, Outlet} from "react-router-dom";
+import { Outlet} from "react-router-dom";
+import { Footer } from "./footer/Footer";
+import { Header } from "./header/Header";
 
 export const Layout = () => {
   return (
     <div>
-        <header>
-            <Link to="/">Home</Link>
-            <Link to="/todo">Cadastrar Tarefa</Link>
-        </header>
+        <Header/>
 
         <main>{<Outlet/>}</main>
 
-        <footer>
-            <p>Desenvolvido por Alexandre Mariano</p>
-        </footer>
+        <Footer/>
     </div>
   )
 }
