@@ -18,8 +18,8 @@
 // }
 
 //Modo via promisses
-
-const returnBase = (data, status, message) => {
+ 
+const returnBase = (data, message, status) => {
   return {
     data,
     message,
@@ -33,25 +33,27 @@ const Get = async () => {
     ? `Usuário ${data} se encontra autenticado`
     : `Nenhum usuário autenticado no sistema`;
 
-  return returnBase(data, !!data, message);
+  return returnBase(data, message, !!data);
 };
 
 const Set = async (data) => {
   localStorage.setItem("auth", JSON.stringify(data));
+  let res;
 
   await Get().then(({ data }) => {
-    return returnBase(
+    res = returnBase(
       data,
+      `Usuário ${data} foi autenticado com sucesso.`,
       true,
-      `Usuário ${data} foi autenticado com sucesso.`
     );
   });
+  return res;
 };
 
 const Clear = async () => {
   localStorage.removeItem("auth");
 
-  return  returnBase(null, true, `Usuário deslogado com sucesso`)
+  return  returnBase(null, `Usuário deslogado com sucesso`, true)
 };
 
 export const AuthService = {
