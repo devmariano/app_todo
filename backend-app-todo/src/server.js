@@ -33,6 +33,13 @@ server.post("/auth", (request, response) => {
     //se não existir email nem password
     const emptyData = !body?.email || !body?.password;
 
+    if (emptyData) {
+      return response.status(400).json({
+        message: "Os dados do formulario são obrigatorios",
+        data: null,
+        success: false,
+      });
+    }
 
     return response.status(emptyData ? 400 : 200).json({
       Message: !emptyData
