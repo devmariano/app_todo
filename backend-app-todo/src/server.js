@@ -41,16 +41,25 @@ server.post("/auth", (request, response) => {
       });
     }
 
-    return response.status(emptyData ? 400 : 200).json({
-      Message: !emptyData
-              ? `Usuário ${body.email} foi autenticado com sucesso.` 
-              : `Não foi possivel autenticar, usuário ou senha inválido`,
-      success: !emptyData,
-      data: !emptyData ? body : null
-    })
+    const user = users.find((item) => item.email === body.email);
+    
+    if (!user){
+      return response.status(404).json({
+        message: `Não foi possivel autenticar`,
+        data: null,
+        success: false,
+      });
+    }
 
-    //para teste e post no insomnia
-    //response.status(200).json(body);
+    const isPasswordValid = user.password === body.password;
+
+    return response.status(!isPasswordValid ? 403 : 200).json({
+      message: isPasswordValid
+              ? `Usuário ${user.email} foi autenticado com sucesso.` 
+              : `Não foi possivel autenticar, usuário ou senha inválido`,
+      success: isPasswordValid,
+      data: isPasswordValid ? user : null,
+    });
 });
 
 module.exports = {
