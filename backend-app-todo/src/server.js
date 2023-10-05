@@ -15,6 +15,39 @@ const users = [
   },
 ];
 
+const todos = [
+  {
+    id: 1,
+    title: "Comprar mantimentos",
+    description: "Compre leite, ovos, pão e frutas no supermercado.",
+    completed: false,
+  },
+  {
+    id: 2,
+    title: "Reunião de trabalho",
+    description: "Participe da reunião de equipe às 10h para discutir o projeto.",
+    completed: true,
+  },
+  {
+    id: 3,
+    title: "Fazer exercícios",
+    description: "Faça 30 minutos de exercícios aeróbicos e 15 minutos de musculação.",
+    completed: true,
+  },
+  {
+    id: 4,
+    title: "Ler um livro",
+    description: "Leia o novo livro de ficção científica que comprou na livraria.",
+    completed: false,
+  },
+  {
+    id: 5,
+    title: "Assistir a um filme",
+    description: "Assista ao último lançamento de filme no streaming.",
+    completed: true,
+  },
+];
+
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const express = require("express");
@@ -90,9 +123,25 @@ server.get("/todos", (request, response) => {
     });
   }
 
-  return response.json({message:"tem o token né!"})
-
-
+  jwt.verify(
+    authorization.replace("Bearer ", ""),
+    process.env.APP_SECRET,
+    (err, decoded) => {
+      //decodec não é necessario mas tras info do usuario autenticado
+      console.log(decoded)
+      return err
+        ? response.status(500).json({
+            success: false,
+            message: "Token invalido",
+            data: null,
+          })
+        : response.status(200).json({
+            message: `Foram encontrados ${todos.length} tarefas`,
+            data: todos,
+            success: true,
+          });
+    }
+  );
 });
 
 module.exports = {
