@@ -77,6 +77,24 @@ server.post("/auth", (request, response) => {
   });
 });
 
+//fim da autenticação e inicio dos endpoints todo
+
+server.get("/todos", (request, response) => {
+  const { authorization } = request.headers;
+
+  if (!authorization) {
+    return response.status(401).json({
+      data: null,
+      message: "E necessario gerar um token para acessar o recurso",
+      success: false,
+    });
+  }
+
+  return response.json({message:"tem o token né!"})
+
+
+});
+
 module.exports = {
   server,
 };
