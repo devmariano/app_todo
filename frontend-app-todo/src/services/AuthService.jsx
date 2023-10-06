@@ -1,68 +1,27 @@
-//modo via localstorage
-// const Get = () =>{
-//     return JSON.parse(localStorage.getItem('auth'));
-// }
+const API_ENDPOINT = `http://localhost:3033/{resource}`;
 
-// const Set = (data) => {
-//     return localStorage.setItem("auth", JSON.stringify(data));
-// }
-
-// const Clear = () => {
-//     localStorage.removeItem("auth");
-// }
-
-// export const AuthService = {
-//     Get,
-//     Set,
-//     Clear,
-// }
-
-//Modo via promisses
- 
-const returnBase = (data, message, status) => {
-  return {
-    data,
-    message,
-    status,
-  };
+const Get = () => {
+  return localStorage.getItem("token");
 };
 
-const Get = async () => {
-  const data = JSON.parse(localStorage.getItem("auth"));
-  const message = data
-    ? `Usuário ${data} se encontra autenticado`
-    : `Nenhum usuário autenticado no sistema`;
-
-  return returnBase(data, message, !!data);
+const Set = (token) => {
+  localStorage.setItem("token", token);
+  return Get() === token;
 };
 
-const Set = async (data) => {
-  localStorage.setItem("auth", JSON.stringify(data));
-  let res;
-
-  await Get().then(({ data }) => {
-    res = returnBase(
-      data,
-      `Usuário ${data} foi autenticado com sucesso.`,
-      true,
-    );
+const Auth = async (data) => {
+  return await fetch(API_ENDPOINT.replace("{resource}", "auth"), {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" },
   });
-  return res;
 };
 
-const Clear = async () => {
-  localStorage.removeItem("auth");
-
-  return  returnBase(null, `Usuário deslogado com sucesso`, true)
-};
+const Logout = async () => {};
 
 export const AuthService = {
-  Get,
+  Auth,
+  Logout,
   Set,
-  Clear,
+  Get,
 };
-//forma com then catch
-// AuthService.Get().then().catch();
-//outra forma com await
-// const response = await AuthService.Get()
-// const data = await response.json();

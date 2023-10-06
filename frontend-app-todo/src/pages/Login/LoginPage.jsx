@@ -1,32 +1,35 @@
 import { useForm } from "react-hook-form";
-import InputMask from "react-input-mask";
 import { useAuth } from "../../hooks/AuthHook";
-import { useEffect } from "react";
 import { AuthService } from "../../services/AuthService";
-
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm();
 
   const { login } = useAuth();
 
   const onSubmit = async (data) => {
-    const body = { ...data, login: data.login.replace(/[^\w]/g, "") };
-    await login(body);
+    await AuthService.Auth(data).then(async (response) => {
+      const res = await response.json();
+
+      if (response.status === 200) {
+        login(res.data);
+      }
+
+      alert(res.message);
+      reset();
+    });
   };
 
   useEffect(() => {
-    const asyncFn = async () => {
-      await AuthService.Get(async (response) => {
-        !!response && (await login({ login: response.data }));
-      });
-    };
-
-    asyncFn();
+    AuthService.Get() && navigate("/");
   }, []);
 
   return (
@@ -34,22 +37,22 @@ export const LoginPage = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label htmlFor="login">Login</label>
-          <InputMask
-            mask="999.999.999-99"
-            id="login"
-            placeholder="Digite seu login"
-            {...register("login", {
-              required: "Campo de login e de preenchimento obrigatório",
+          <input
+            type="email"
+            id="email"
+            placeholder="Digite seu email"
+            {...register("email", {
+              required: "Campo de email e de preenchimento obrigatório",
             })}
           />
           {errors?.login && <p>{errors?.login?.message}</p>}
         </div>
         <div>
-          <label htmlFor="pass">Senha</label>
+          <label htmlFor="password">Senha</label>
           <input
             type="password"
-            id="pass"
-            {...register("pass", {
+            id="password"
+            {...register("password", {
               required: "Campo de senha e de preenchimento obrigatório",
               minLength: {
                 value: 8,

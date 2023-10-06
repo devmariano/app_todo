@@ -2,14 +2,15 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/AuthHook";
 
 export const Header = () => {
-  const { logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <header>
       <Link to="/">Home</Link>
       <Link to="/todo">Cadastar Tarefa</Link>
 
-      <button onClick={logout}>Sair</button>
+      <h1>{user().email}</h1>
+      <button>Sair</button>
     </header>
   );
 };
