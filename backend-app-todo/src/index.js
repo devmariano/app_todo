@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { server } = require("./server");
 const { Sequelize } = require("sequelize");
-const DB_CONFIG =  require("../config/database.js")
+const DB_CONFIG =  require("./config/database")
 
 const sequelize = new Sequelize(DB_CONFIG);
 const connect = async () => {
