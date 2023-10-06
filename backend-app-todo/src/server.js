@@ -54,10 +54,11 @@ const express = require("express");
 const cors = require("cors");
 const server = express();
 
-server.use(cors({
-  // origin: 'http://localhost:5173/',
-  origin: '*',
-}))
+server.use(
+  cors({
+    origin: "*",
+  })
+);
 server.use(express.json());
 
 server.get("/", (request, response) => {
@@ -69,7 +70,6 @@ server.get("/", (request, response) => {
 server.post("/auth", (request, response) => {
   const { body } = request;
 
-  //se não existir email nem password
   const emptyData = !body?.email || !body?.password;
 
   if (emptyData) {
@@ -84,7 +84,7 @@ server.post("/auth", (request, response) => {
 
   if (!user) {
     return response.status(404).json({
-      message: `Não foi possivel autenticar`,
+      message: `Não foi possivel fazer autenticação`,
       data: null,
       success: false,
     });
@@ -108,14 +108,12 @@ server.post("/auth", (request, response) => {
 
   return response.status(!isPasswordValid ? 401 : 200).json({
     message: isPasswordValid
-      ? `Usuário ${user.email} foi autenticado com sucesso.`
-      : `Não foi possivel autenticar, usuário ou senha inválido`,
+      ? `Usuário ${user.email} autenticado com sucesso.`
+      : `Usuário e/ou senha invalidos`,
     success: isPasswordValid,
     data: isPasswordValid ? token : null,
   });
 });
-
-//fim da autenticação e inicio dos endpoints todo
 
 server.get("/todos", (request, response) => {
   const { authorization } = request.headers;
@@ -131,9 +129,7 @@ server.get("/todos", (request, response) => {
   jwt.verify(
     authorization.replace("Bearer ", ""),
     process.env.APP_SECRET,
-    (err, decoded) => {
-      //decodec não é necessario mas tras info do usuario autenticado
-      console.log(decoded)
+    (err) => {
       return err
         ? response.status(500).json({
             success: false,
@@ -141,7 +137,7 @@ server.get("/todos", (request, response) => {
             data: null,
           })
         : response.status(200).json({
-            message: `Foram encontrados ${todos.length} tarefas`,
+            message: `Foram encontrados ${todos.length} tarafas`,
             data: todos,
             success: true,
           });
